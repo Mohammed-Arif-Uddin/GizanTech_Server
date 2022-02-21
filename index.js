@@ -16,7 +16,7 @@ const client = new MongoClient(uri, {
 });
 client.connect((err) => {
   const ProductCollection = client.db("emajohn").collection("emaProducts");
-  const OrderCollection = client.db("emajohn").collection("emaOrder")
+  const OrderCollection = client.db("emajohn").collection("emaOrder");
 
   app.post("/addProducts", (req, res) => {
     const pro = req.body;
@@ -33,21 +33,25 @@ client.connect((err) => {
   });
 
   app.get("/singleProduct/:key", (req, res) => {
-    ProductCollection.find({ key: req.params.key }).toArray((err, documents) => {
-      res.send(documents[0]);
-    });
+    ProductCollection.find({ key: req.params.key }).toArray(
+      (err, documents) => {
+        res.send(documents[0]);
+      }
+    );
   });
 
   app.post("/singlePost", (req, res) => {
     const product = req.body;
-    ProductCollection.find({ key: { $in: product } }).toArray((err, documents) => {
-      res.send(documents);
-    });
+    ProductCollection.find({ key: { $in: product } }).toArray(
+      (err, documents) => {
+        res.send(documents);
+      }
+    );
   });
 
   app.post("/orderProducts", (req, res) => {
     const order = req.body;
-   OrderCollection.insertOne(order).then((result) => {
+    OrderCollection.insertOne(order).then((result) => {
       console.log(result.acknowledged);
       res.send(result.acknowledged);
     });
@@ -56,9 +60,8 @@ client.connect((err) => {
   console.log("Database Connected!!!");
 });
 
-
 app.get("/", (req, res) => {
   res.send("Welcome To Our Server!!!");
 });
 
-app.listen(port);
+app.listen(process.env.PORT || port);
